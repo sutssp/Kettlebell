@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELLWORK — Kettlebell Pair Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14181d; --bg2:#191f26; --panel:#1e242d; --panel2:#232a34; --line:#2e3742;
+  --chalk:#f1efe6; --dim:#98a2ae;
+  --org:#ff7a29; --green:#3ddc84; --amber:#ffb224; --blue:#4aa8ff; --red:#ff5d5d;
+  --c-squat:#56c8ff; --c-hinge:#ff9440; --c-push:#4ade80; --c-pull:#ffd23f;
+  --c-core:#c084fc; --c-carry:#f472b6; --c-cond:#ff5d5d;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Barlow',sans-serif;color:var(--chalk);background:
+  radial-gradient(1200px 600px at 85% -10%, rgba(255,122,41,.08), transparent 60%),
+  radial-gradient(900px 500px at -10% 110%, rgba(74,168,255,.06), transparent 60%),
+  var(--bg);
+  min-height:100vh;
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(rgba(241,239,230,.05) 1px, transparent 1.4px);
+  background-size:26px 26px;}
+#bgBell{position:fixed;right:-70px;bottom:-50px;width:440px;height:480px;color:var(--chalk);
+  opacity:.045;z-index:0;pointer-events:none;animation:floaty 9s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(2deg)}}
+.wrap{max-width:1140px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.anton{font-family:'Anton',sans-serif;letter-spacing:.02em}
+h1,h2,h3{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.03em}
+button{font-family:'Barlow',sans-serif}
+::selection{background:var(--org);color:#1c1005}
+
+/* Screen-reader-only text: hidden visually, still announced */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  white-space:nowrap;border:0;clip-path:inset(50%)}
+
+/* header */
+#hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+body.in-timer #hdr{display:none}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:34px;height:37px;color:var(--org)}
+.logo .word{font-family:'Anton';font-size:1.4rem;letter-spacing:.06em}
+.logo .word em{color:var(--org);font-style:normal}
+.logo small{display:block;font:600 .58rem 'Barlow';letter-spacing:.28em;color:var(--dim);text-transform:uppercase}
+.hdr-btns{display:flex;gap:8px}
+
+/* buttons */
+.btn{font:600 .82rem/1 'Barlow';letter-spacing:.08em;text-transform:uppercase;padding:.85rem 1.1rem;
+  border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--chalk);
+  cursor:pointer;transition:.15s;display:inline-flex;gap:.5rem;align-items:center;justify-content:center}
+.btn:hover{transform:translateY(-1px);border-color:#465361;background:#28303b}
+.btn:active{transform:scale(.96)}
+.btn-prime{background:var(--org);border-color:var(--org);color:#1c1005;font-weight:800;box-shadow:0 6px 22px rgba(255,122,41,.28)}
+.btn-prime:hover{background:#ff8d47;box-shadow:0 8px 28px rgba(255,122,41,.42)}
+.btn-danger{border-color:var(--red);color:var(--red);background:transparent}
+.btn-danger:hover{background:rgba(255,93,93,.12);border-color:var(--red)}
+.btn-xl{padding:1.05rem 1.5rem;font-size:.95rem}
+.btn.mini{padding:.45rem .6rem;font-size:.68rem}
+
+/* screens */
+.screen{display:none}
+.screen.on{display:block;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* setup layout */
+.setup-grid{display:grid;gap:28px;padding:34px 0 60px}
+@media(min-width:980px){.setup-grid{grid-template-columns:1.05fr .95fr;gap:40px;padding:48px 0 70px}}
+.eyebrow{font:800 .7rem 'Barlow';letter-spacing:.3em;text-transform:uppercase;color:var(--org);margin-bottom:14px}
+.big-formula{display:flex;align-items:stretch;gap:8px;margin:6px 0 4px;flex-wrap:wrap}
+.big-formula .blk{font-family:'Anton';font-size:clamp(2.6rem,8vw,4.6rem);line-height:1;padding:10px 14px;border-radius:10px}
+.big-formula .plus{font-family:'Anton';font-size:clamp(1.8rem,5vw,3rem);align-self:center;color:var(--dim)}
+.blk.a{background:rgba(61,220,132,.14);color:var(--green);border:1px solid rgba(61,220,132,.4)}
+.blk.b{background:rgba(61,220,132,.14);color:var(--green);border:1px solid rgba(61,220,132,.4)}
+.blk.r{background:rgba(74,168,255,.12);color:var(--blue);border:1px solid rgba(74,168,255,.4)}
+.blk small{display:block;font:700 .55rem 'Barlow';letter-spacing:.2em;margin-top:4px;text-transform:uppercase;opacity:.8}
+.tagline{color:var(--dim);font-size:1.02rem;max-width:44ch;margin:14px 0 24px}
+.tagline b{color:var(--chalk)}
+
+.qstart{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.qtile{background:linear-gradient(180deg,var(--panel),#1a2028);border:1px solid var(--line);border-radius:12px;
+  padding:16px 8px 14px;text-align:center;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.qtile:hover{transform:translateY(-3px);border-color:var(--org);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.qtile:active{transform:scale(.97)}
+.qtile .qn{font-family:'Anton';font-size:clamp(1.7rem,4.5vw,2.4rem);color:var(--chalk)}
+.qtile .qn span{color:var(--org);font-size:.55em}
+.qtile .qs{font:600 .64rem 'Barlow';color:var(--dim);letter-spacing:.03em;margin-top:5px;line-height:1.4}
+.qtile::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--org);
+  transform:scaleX(0);transition:.25s;transform-origin:left}
+.qtile:hover::after{transform:scaleX(1)}
+#lastHint{font-size:.8rem;color:var(--dim);border-left:3px solid var(--org);padding:6px 10px;background:rgba(255,122,41,.06);border-radius:0 6px 6px 0}
+
+/* console */
+.console{background:linear-gradient(180deg,var(--panel),#1a2029);border:1px solid var(--line);border-radius:14px;padding:20px 18px 22px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.console h2{font-size:1.3rem;margin-bottom:4px}
+.console .sub{font-size:.78rem;color:var(--dim);margin-bottom:6px}
+.flabel{font:800 .68rem 'Barlow';letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin:1.15rem 0 .5rem;display:flex;align-items:center;gap:.5rem}
+.flabel::before{content:'';width:8px;height:8px;background:var(--org);flex:none}
+.seg{display:flex;background:#12161b;border:1px solid var(--line);border-radius:9px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;color:var(--dim);font:700 .76rem 'Barlow';letter-spacing:.05em;
+  text-transform:uppercase;padding:.6rem .3rem;border-radius:6px;cursor:pointer;transition:.15s}
+.seg button:hover{color:var(--chalk)}
+.seg button.on{background:var(--chalk);color:#14181d;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.seg button small{display:block;font-weight:500;text-transform:none;letter-spacing:0;opacity:.7;font-size:.64rem;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1px solid var(--line);background:#12161b;color:var(--dim);padding:.48rem .8rem;border-radius:999px;
+  font:600 .76rem 'Barlow';cursor:pointer;transition:.15s;letter-spacing:.03em}
+.chip:hover{border-color:#4a5665;color:var(--chalk)}
+.chip.on{background:var(--org);border-color:var(--org);color:#1c1005;transform:scale(1.05)}
+.chip.warn.on{background:var(--red);border-color:var(--red);color:#fff}
+/* Row padding trimmed slightly so the taller 44px switch keeps the block's original density */
+.tgl{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px dashed var(--line);gap:12px}
+.tgl:last-of-type{border-bottom:0}
+.tgl .tl{font-weight:600;font-size:.88rem}
+.tgl .ts{font-size:.7rem;color:var(--dim)}
+/* Switch: native <button>. The visible 46×26 track is drawn on ::before so the button
+   itself can be 44px tall (touch target) without changing the visual design. */
+.sw{position:relative;width:46px;min-height:44px;padding:0;border:0;background:transparent;
+  appearance:none;-webkit-appearance:none;font:inherit;cursor:pointer;flex:none}
+.sw::before{content:'';position:absolute;top:50%;left:0;transform:translateY(-50%);
+  width:46px;height:26px;border-radius:99px;background:#2c343f;border:1px solid var(--line);
+  box-sizing:border-box;transition:background .2s,border-color .2s}
+.sw::after{content:'';position:absolute;top:50%;left:0;width:20px;height:20px;border-radius:50%;
+  background:#8b96a3;transform:translate(2px,-50%);transition:transform .2s,background .2s}
+.sw.on::before{background:var(--green);border-color:var(--green)}
+.sw.on::after{transform:translate(22px,-50%);background:#0d1a12}
+.sw:focus-visible{outline:3px solid var(--blue);outline-offset:4px;box-shadow:0 0 0 6px rgba(74,168,255,.18)}
+.sw:disabled{cursor:not-allowed;opacity:.45}
+@media (prefers-reduced-motion: reduce){
+  .sw,.sw::before,.sw::after{transition:none}
+}
+.saved-box{margin-top:18px}
+.saved-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:.6rem .8rem;border:1px solid var(--line);border-radius:8px;margin-bottom:7px;font-size:.8rem;background:#171d25}
+.foot-note{margin-top:22px;font-size:.72rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+
+/* preview */
+.pv-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:22px 0 14px}
+.pv-top h2{font-size:clamp(1.6rem,5vw,2.3rem)}
+.pv-actions{display:flex;gap:8px;flex-wrap:wrap}
+.meta-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.mchip{font:700 .68rem 'Barlow';letter-spacing:.06em;text-transform:uppercase;padding:.35rem .65rem;border-radius:6px;background:#12161b;border:1px solid var(--line);color:var(--dim)}
+.mchip.hl{color:var(--org);border-color:rgba(255,122,41,.4)}
+.safety{border:1px solid rgba(255,93,93,.45);background:rgba(255,93,93,.08);border-radius:10px;padding:12px 14px;font-size:.85rem;margin-bottom:16px;display:flex;gap:10px}
+.safety .dot{width:10px;height:10px;border-radius:50%;background:var(--red);flex:none;margin-top:5px;animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.card{background:linear-gradient(180deg,var(--panel),#1b212a);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:12px}
+.wc-card h3{font-size:1rem;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.wc-item{display:flex;justify-content:space-between;gap:10px;font-size:.84rem;padding:5px 0;border-bottom:1px dashed var(--line)}
+.wc-item:last-child{border:0}
+.wc-item .t{color:var(--dim);flex:none}
+.bal{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.7rem}
+.bal .bl{width:74px;flex:none;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.bal .bar{flex:1;height:9px;background:#12161b;border-radius:99px;overflow:hidden}
+.bal .fill{height:100%;border-radius:99px;transition:width .5s}
+.bal .bn{width:20px;text-align:right;color:var(--dim);flex:none}
+.pair{border-left:4px solid var(--c,var(--org));position:relative}
+.pair-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.pair-no{font-family:'Anton';font-size:1.05rem;letter-spacing:.05em}
+.ptype{font:700 .62rem 'Barlow';letter-spacing:.1em;text-transform:uppercase;color:var(--c,var(--org));
+  background:color-mix(in srgb,var(--c,var(--org)) 14%, transparent);padding:.25rem .55rem;border-radius:4px}
+.ptools{margin-left:auto;display:flex;gap:5px}
+.exrow{padding:.7rem 0;border-top:1px dashed var(--line)}
+.exrow .line1{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.slot{font-family:'Anton';width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:.85rem;flex:none;transform:translateY(3px)}
+.slot.a{background:var(--green);color:#0b1a10}
+.slot.b{background:var(--blue);color:#0a1626}
+.exname{font-weight:800;font-size:1rem}
+.durtag{font:700 .62rem 'Barlow';letter-spacing:.08em;color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:.18rem .4rem;flex:none}
+.wtag{font:700 .62rem 'Barlow';color:var(--org);flex:none}
+.tag{font:700 .6rem 'Barlow';letter-spacing:.08em;padding:.2rem .45rem;border-radius:4px;text-transform:uppercase;
+  background:color-mix(in srgb,var(--c,var(--dim)) 16%, transparent);color:var(--c,var(--dim));flex:none}
+.mus{font-size:.72rem;color:var(--dim)}
+.exrow .line2{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px}
+.easier{font-size:.74rem;color:var(--dim)}
+.easier b{color:var(--green);font-weight:600}
+.restrow{border-top:1px dashed var(--line);padding:.55rem 0 0;font:700 .72rem 'Barlow';letter-spacing:.1em;color:var(--blue);text-transform:uppercase}
+.stickyStart{position:sticky;bottom:0;padding:14px 0 18px;background:linear-gradient(transparent,var(--bg) 40%);display:flex;gap:10px;z-index:5}
+.stickyStart .btn-prime{flex:1}
+
+/* timer */
+#scr-timer{min-height:100vh;display:none;flex-direction:column}
+#scr-timer.on{display:flex}
+#scr-timer{--ph:var(--green);transition:background .6s;
+  background:radial-gradient(900px 560px at 50% -12%, color-mix(in srgb,var(--ph) 24%, transparent), transparent 72%),var(--bg)}
+#scr-timer.ph-work{--ph:var(--green)}
+#scr-timer.ph-amber{--ph:var(--amber)}
+#scr-timer.ph-rest{--ph:var(--blue)}
+#scr-timer.ph-warm{--ph:#2fd4b0}
+#scr-timer.ph-cool{--ph:#7fb4ff}
+.t-prog{height:5px;background:#12161b}
+.t-prog i{display:block;height:100%;background:var(--ph);transition:width .3s;width:0}
+.t-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font:700 .78rem 'Barlow';letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.t-head b{color:var(--chalk)}
+.t-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 16px;gap:6px;user-select:none;-webkit-user-select:none}
+.stage{font:800 .8rem 'Barlow';letter-spacing:.28em;text-transform:uppercase;color:var(--ph);border:1.5px solid var(--ph);
+  padding:.45rem 1.1rem;border-radius:999px;background:color-mix(in srgb,var(--ph) 12%, transparent)}
+.ringwrap{position:relative;width:clamp(250px,64vw,360px);aspect-ratio:1;margin:8px 0}
+.ringwrap svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#232a34;stroke-width:10}
+.ring-fg{fill:none;stroke:var(--ph);stroke-width:10;stroke-linecap:round;transition:stroke .4s}
+.bignum{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bignum .n{font-family:'Anton';font-size:clamp(4.6rem,24vmin,8.5rem);line-height:.95}
+.bignum .u{font:800 .7rem 'Barlow';letter-spacing:.34em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+#scr-timer.ph-amber .bignum .n{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.t-name{font-family:'Anton';font-size:clamp(1.5rem,5.4vw,2.6rem);letter-spacing:.03em;max-width:22ch}
+.t-side{font:700 .8rem 'Barlow';letter-spacing:.12em;text-transform:uppercase;color:var(--ph)}
+.t-cue{font-size:.92rem;color:var(--dim);max-width:40ch}
+.t-alt{font-size:.78rem;color:var(--dim)}
+.t-alt b{color:var(--green);font-weight:600}
+.t-next{margin-top:6px;font:700 .74rem 'Barlow';letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  border-top:1px dashed var(--line);padding-top:10px;max-width:90vw}
+.t-next b{color:var(--chalk)}
+.t-ctrls{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px 14px calc(16px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;width:100%}
+.tbtn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:.7rem .3rem;border-radius:10px;border:1px solid var(--line);
+  background:#1a2028;color:var(--chalk);cursor:pointer;font:700 .62rem 'Barlow';letter-spacing:.1em;text-transform:uppercase;transition:.15s}
+.tbtn .ic{font-size:1.25rem;line-height:1}
+.tbtn:hover{border-color:#4a5665;transform:translateY(-1px)}
+.tbtn:active{transform:scale(.95)}
+.tbtn.big{grid-column:span 1;background:var(--chalk);color:#14181d;border-color:var(--chalk)}
+.tbtn.stop{color:var(--red);border-color:rgba(255,93,93,.5)}
+#sideFlash{position:fixed;top:0;left:0;right:0;z-index:60;background:var(--amber);color:#241703;text-align:center;
+  font-family:'Anton';font-size:clamp(1.3rem,5vw,2rem);letter-spacing:.12em;padding:.7rem;transform:translateY(-100%);transition:.25s}
+#sideFlash.show{transform:none}
+
+/* overlays */
+.ov{position:fixed;inset:0;background:rgba(9,11,14,.85);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+.ov.on{display:flex}
+.ov-card{background:linear-gradient(180deg,var(--panel),#1a2029);border:1px solid var(--line);border-radius:14px;padding:26px 22px;max-width:460px;width:100%;animation:rise .3s ease both;text-align:center}
+.ov-card h3{font-size:1.6rem;margin-bottom:10px}
+.ov-card.red{border-color:rgba(255,93,93,.55)}
+.ov-card.red h3{color:var(--red)}
+.ov-card p{color:var(--dim);font-size:.9rem;margin-bottom:16px;line-height:1.5}
+.eff-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0 6px}
+.eff-grid button{font-family:'Anton';font-size:1.3rem;padding:.65rem 0;border-radius:8px;border:1px solid var(--line);background:#12161b;color:var(--chalk);cursor:pointer;transition:.12s}
+.eff-grid button:hover{background:var(--org);color:#1c1005;border-color:var(--org);transform:scale(1.07)}
+.eff-labels{display:flex;justify-content:space-between;font:600 .62rem 'Barlow';letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+.ov-btns{display:flex;gap:10px;margin-top:14px}
+.ov-btns .btn{flex:1}
+textarea{width:100%;background:#12161b;border:1px solid var(--line);border-radius:8px;color:var(--chalk);padding:10px;font:500 .88rem 'Barlow';min-height:70px;resize:vertical}
+textarea:focus{outline:none;border-color:var(--org)}
+
+/* done */
+.done-wrap{max-width:640px;margin:0 auto;padding:40px 0 70px;text-align:center}
+.done-wrap h2{font-size:clamp(2.6rem,10vw,4.5rem);color:var(--green)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 8px}
+.stat .v{font-family:'Anton';font-size:1.7rem}
+.stat .l{font:700 .6rem 'Barlow';letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.coach-line{background:rgba(61,220,132,.08);border:1px solid rgba(61,220,132,.35);border-radius:10px;padding:12px 14px;font-size:.88rem;margin:14px 0;text-align:left}
+
+/* history */
+.hist-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.hcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;transition:.15s}
+.hcard:hover{border-color:#465361;transform:translateY(-1px)}
+.hcard .hd{font-weight:800}
+.hcard .chips2{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.badge{font:700 .6rem 'Barlow';letter-spacing:.08em;text-transform:uppercase;padding:.22rem .5rem;border-radius:4px}
+.badge.ok{background:rgba(61,220,132,.15);color:var(--green)}
+.badge.part{background:rgba(255,178,36,.15);color:var(--amber)}
+.hnote{font-size:.76rem;color:var(--dim);margin-top:7px;font-style:italic}
+.empty{color:var(--dim);text-align:center;padding:40px 0;font-size:.9rem}
+
+/* toast */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--chalk);color:#14181d;
+  font:700 .8rem 'Barlow';padding:.7rem 1.2rem;border-radius:99px;opacity:0;pointer-events:none;transition:.3s;z-index:99;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+@media(max-width:560px){
+  .t-ctrls{grid-template-columns:repeat(5,1fr)}
+  .qstart{gap:7px}
+  .stat-grid,.hist-stats{grid-template-columns:repeat(3,1fr);gap:7px}
+}
+</style>
+</head>
+<body>
+
+<svg id="bgBell" viewBox="0 0 120 130" fill="none">
+  <path d="M40 55 C40 26 80 26 80 55" stroke="currentColor" stroke-width="10" stroke-linecap="round"/>
+  <path d="M60 46 C36 46 24 64 24 84 C24 106 40 120 60 120 C80 120 96 106 96 84 C96 64 84 46 60 46Z" fill="currentColor"/>
+</svg>
+
+<div class="wrap">
+<header id="hdr">
+  <div class="logo">
+    <svg viewBox="0 0 120 130" fill="none"><path d="M40 55 C40 26 80 26 80 55" stroke="currentColor" stroke-width="11" stroke-linecap="round"/><path d="M60 46 C36 46 24 64 24 84 C24 106 40 120 60 120 C80 120 96 106 96 84 C96 64 84 46 60 46Z" fill="currentColor"/></svg>
+    <div><div class="word">BELL<em>WORK</em></div><small>Kettlebell pair coach</small></div>
+  </div>
+  <div class="hdr-btns">
+    <button class="btn mini" id="hdrSound" aria-label="Sound">🔊</button>
+    <button class="btn mini" id="hdrHist">📒 Log</button>
+  </div>
+</header>
+
+<!-- ============ SETUP ============ -->
+<section class="screen on" id="scr-setup">
+  <div class="setup-grid">
+    <div>
+      <div class="eyebrow">Your session, built right</div>
+      <div class="big-formula">
+        <div class="blk a">45<small>sec · work A</small></div><div class="plus">+</div>
+        <div class="blk b">45<small>sec · work B</small></div><div class="plus">+</div>
+        <div class="blk r">30<small>sec · rest</small></div>
+      </div>
+      <p class="tagline">Two compatible exercises, one <b>2-minute pair</b>, zero wasted decisions. A balanced full-body kettlebell session — <b>no switch between A and B</b>, just flow.</p>
+      <div class="qstart">
+        <button class="qtile" data-dur="30"><div class="qn">30<span> MIN</span></div><div class="qs" id="qsub30"></div></button>
+        <button class="qtile" data-dur="40"><div class="qn">40<span> MIN</span></div><div class="qs" id="qsub40"></div></button>
+        <button class="qtile" data-dur="45"><div class="qn">45<span> MIN</span></div><div class="qs" id="qsub45"></div></button>
+      </div>
+      <div id="lastHint"></div>
+      <div class="foot-note">Technique beats speed · every session</div>
+    </div>
+
+    <div class="console">
+      <h2>COACH CONSOLE</h2>
+      <div class="sub">Set it once — quick-start handles the rest.</div>
+
+      <div class="flabel">Fitness level</div>
+      <div class="seg" id="sgLevel">
+        <button data-v="beginner" class="on">Beginner</button>
+        <button data-v="intermediate">Intermediate</button>
+        <button data-v="advanced">Advanced</button>
+      </div>
+
+      <div class="flabel">Session length</div>
+      <div class="seg" id="sgDur">
+        <button data-v="30" class="on">30 min</button>
+        <button data-v="40">40 min</button>
+        <button data-v="45">45 min</button>
+      </div>
+
+      <div class="flabel">Kettlebells</div>
+      <div class="seg" id="sgKb">
+        <button data-v="1" class="on">One bell</button>
+        <button data-v="2">Two bells</button>
+      </div>
+
+      <div class="flabel">Training goal</div>
+      <div class="seg" id="sgGoal">
+        <button data-v="general" class="on">General<small>fitness</small></button>
+        <button data-v="strength">Strength<small>endurance</small></button>
+        <button data-v="cond">Conditioning</button>
+      </div>
+
+      <div class="flabel">Swing experience</div>
+      <div class="seg" id="sgSwing">
+        <button data-v="no" class="on">Not trained</button>
+        <button data-v="learn">Learning</button>
+        <button data-v="conf">Confident</button>
+      </div>
+
+      <div class="flabel">Session shape &amp; limits</div>
+      <div class="tgl">
+        <div>
+          <div class="tl" id="warmLabel">Warm-up</div>
+          <div class="ts" id="warmHelp">Guided, timed, before the pairs</div>
+        </div>
+        <button type="button" class="sw on" id="tgWarm" data-k="warm" role="switch"
+                aria-checked="true" aria-labelledby="warmLabel" aria-describedby="warmHelp">
+          <span class="sr-only" aria-hidden="true">On</span>
+        </button>
+      </div>
+      <div class="tgl">
+        <div>
+          <div class="tl" id="coolLabel">Cool-down</div>
+          <div class="ts" id="coolHelp">Stretches + breathing after</div>
+        </div>
+        <button type="button" class="sw on" id="tgCool" data-k="cool" role="switch"
+                aria-checked="true" aria-labelledby="coolLabel" aria-describedby="coolHelp">
+          <span class="sr-only" aria-hidden="true">On</span>
+        </button>
+      </div>
+      <div class="tgl">
+        <div>
+          <div class="tl" id="floorLabel">Floor exercises OK</div>
+          <div class="ts" id="floorHelp">Floor press, plank drags…</div>
+        </div>
+        <button type="button" class="sw on" id="tgFloor" data-k="floor" role="switch"
+                aria-checked="true" aria-labelledby="floorLabel" aria-describedby="floorHelp">
+          <span class="sr-only" aria-hidden="true">On</span>
+        </button>
+      </div>
+      <div class="tgl">
+        <div>
+          <div class="tl" id="ohLabel">Overhead exercises OK</div>
+          <div class="ts" id="ohHelp">Presses, halos, snatches…</div>
+        </div>
+        <button type="button" class="sw on" id="tgOh" data-k="oh" role="switch"
+                aria-checked="true" aria-labelledby="ohLabel" aria-describedby="ohHelp">
+          <span class="sr-only" aria-hidden="true">On</span>
+        </button>
+      </div>
+      <div class="tgl">
+        <div>
+          <div class="tl" id="lowLabel">Low-impact workout</div>
+          <div class="ts" id="lowHelp">No fast ballistic work</div>
+        </div>
+        <button type="button" class="sw" id="tgLow" data-k="low" role="switch"
+                aria-checked="false" aria-labelledby="lowLabel" aria-describedby="lowHelp">
+          <span class="sr-only" aria-hidden="true">Off</span>
+        </button>
+      </div>
+
+      <div class="flabel">Available kettlebell weights (kg)</div>
+      <div class="chips" id="weightChips"></div>
+
+      <div class="flabel">Body areas to avoid</div>
+      <div class="chips" id="avoidChips"></div>
+
+      <div style="margin-top:20px"><button class="btn btn-prime btn-xl" id="btnBuild" style="width:100%">⚙ Build my workout</button></div>
+
+      <div class="saved-box" id="savedBox" style="display:none">
+        <div class="flabel">Saved workouts</div>
+        <div id="savedList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREVIEW ============ -->
+<section class="screen" id="scr-preview">
+  <div class="pv-top">
+    <div>
+      <button class="btn mini" id="pvBack">← Edit setup</button>
+      <h2 style="margin-top:10px">YOUR WORKOUT</h2>
+    </div>
+    <div class="pv-actions">
+      <button class="btn" id="btnRegen">⟳ Regenerate</button>
+      <button class="btn" id="btnSaveW">💾 Save</button>
+      <button class="btn btn-prime" id="btnStartTop">Start ▶</button>
+    </div>
+  </div>
+  <div class="meta-chips" id="pvMeta"></div>
+  <div class="safety"><span class="dot"></span><div><b>Before you lift:</b> “Use a weight you can control. Stop if you feel sharp pain, dizziness, chest discomfort, or unusual shortness of breath. Exercise within your current ability.”</div></div>
+  <div id="pvWarmRow"></div>
+  <div class="card" id="pvBalance"><h3 style="font-size:1rem;margin-bottom:8px">SESSION BALANCE</h3><div id="balBars"></div></div>
+  <div id="pvPairs"></div>
+  <div id="pvCoolRow"></div>
+  <div class="stickyStart"><button class="btn btn-prime btn-xl" id="btnStart">▶ START WORKOUT</button></div>
+</section>
+
+<!-- ============ TIMER ============ -->
+<section class="screen" id="scr-timer">
+  <div class="t-prog"><i id="tProg"></i></div>
+  <div class="t-head"><span id="tPairInfo">PAIR 1/15</span><span>TOTAL LEFT <b id="tTotal">30:00</b></span></div>
+  <div class="t-body">
+    <div class="stage" id="stagePill">WORK · A</div>
+    <div class="ringwrap">
+      <svg viewBox="0 0 340 340"><circle class="ring-bg" cx="170" cy="170" r="152"/><circle class="ring-fg" id="ringFg" cx="170" cy="170" r="152"/></svg>
+      <div class="bignum"><span class="n" id="tNum">45</span><span class="u" id="tCount">seconds</span></div>
+    </div>
+    <div class="t-name" id="tName">Kettlebell deadlift</div>
+    <div class="t-side" id="tSide"></div>
+    <div class="t-cue" id="tCue"></div>
+    <div class="t-alt" id="tAlt"></div>
+    <div class="t-next" id="tNext"></div>
+  </div>
+  <div class="t-ctrls">
+    <button class="tbtn" id="cMute"><span class="ic">🔊</span>Sound</button>
+    <button class="tbtn" id="cSkip"><span class="ic">⏭</span>Skip</button>
+    <button class="tbtn big" id="cPause"><span class="ic" id="pauseIc">⏸</span><span id="pauseLb">Pause</span></button>
+    <button class="tbtn" id="cSwap"><span class="ic">🔁</span>Replace</button>
+    <button class="tbtn stop" id="cEnd"><span class="ic">⏹</span>End</button>
+  </div>
+</section>
+
+<!-- ============ DONE ============ -->
+<section class="screen" id="scr-done">
+  <div class="done-wrap">
+    <h2 class="anton" id="doneTitle">DONE.</h2>
+    <div class="stat-grid" id="doneStats"></div>
+    <div class="coach-line" id="doneCoach"></div>
+    <div style="text-align:left;margin:16px 0 8px;font:700 .7rem 'Barlow';letter-spacing:.16em;color:var(--dim);text-transform:uppercase">Session notes</div>
+    <textarea id="doneNote" placeholder="How did it feel? Weights used, reps, anything to remember…"></textarea>
+    <div class="ov-btns" style="margin-top:12px">
+      <button class="btn" id="btnNoteSave">Save notes</button>
+    </div>
+    <div class="ov-btns">
+      <button class="btn btn-prime btn-xl" id="btnAgain">🔔 New workout</button>
+      <button class="btn btn-xl" id="btnHist2">View log</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HISTORY ============ -->
+<section class="screen" id="scr-history">
+  <div class="pv-top">
+    <div><button class="btn mini" id="btnHBack">← Back</button><h2 style="margin-top:10px">TRAINING LOG</h2></div>
+    <button class="btn btn-danger mini" id="btnClearH">Clear all</button>
+  </div>
+  <div class="hist-stats" id="hStats"></div>
+  <div id="hList"></div>
+</section>
+</div>
+
+<!-- overlays -->
+<div id="sideFlash">⇄ SWITCH SIDE</div>
+
+<div class="ov" id="ovSafety"><div class="ov-card">
+  <h3>READY?</h3>
+  <p>“Use a weight you can control. Stop if you feel sharp pain, dizziness, chest discomfort, or unusual shortness of breath. Exercise within your current ability.”<br><br>Good technique is always worth more than fast reps.</p>
+  <button class="btn btn-prime btn-xl" id="btnGo" style="width:100%">TAP TO BEGIN 🔔</button>
+</div></div>
+
+<div class="ov" id="ovEffort"><div class="ov-card">
+  <h3>CHECK-IN</h3>
+  <p>How hard was that block? (1 = easy · 10 = maxed out)</p>
+  <div class="eff-grid" id="effGrid"></div>
+  <div class="eff-labels"><span>Easy</span><span>Just right</span><span>Brutal</span></div>
+</div></div>
+
+<div class="ov" id="ovEnd"><div class="ov-card red">
+  <h3>END THIS WORKOUT?</h3>
+  <p>Your progress so far will be saved to the log as a partial session.</p>
+  <div class="ov-btns"><button class="btn" id="btnStay">Keep going</button><button class="btn btn-danger" id="btnEndYes">End &amp; save</button></div>
+</div></div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ================= helpers ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const CIRC=2*Math.PI*152;
+const store={get(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),2600);}
+const vibrate=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+function fmt(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+
+/* ================= sound ================= */
+let AC=null;
+const S={muted:store.get('bw_mute',false)};
+function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC;}
+function tone(f,d=.12,type='square',g=.08,t0=0){if(S.muted)return;try{const c=ac(),o=c.createOscillator(),ga=c.createGain();
+ o.type=type;o.frequency.value=f;const t=c.currentTime+t0;
+ ga.gain.setValueAtTime(.0001,t);ga.gain.exponentialRampToValueAtTime(g,t+.012);ga.gain.exponentialRampToValueAtTime(.0001,t+d);
+ o.connect(ga).connect(c.destination);o.start(t);o.stop(t+d+.06);}catch(e){}}
+const SND={
+ work(){tone(880,.1);tone(1318,.15,'square',.08,.13);},
+ b(){tone(988,.1);tone(988,.16,'square',.08,.15);},
+ tick(){tone(740,.06,'square',.05);},
+ side(){tone(1175,.09);tone(880,.09,'square',.08,.11);tone(1175,.11,'square',.09,.24);},
+ rest(){tone(523,.18,'sine',.09);tone(392,.26,'sine',.09,.16);},
+ restwarn(){tone(659,.09);tone(659,.09,'square',.07,.13);},
+ done(){[523,659,784,1047].forEach((f,i)=>tone(f,.17,'triangle',.1,i*.15));}
+};
+
+/* ================= exercise library ================= */
+const E=o=>Object.assign({lvl:'b',cat:'squat',pos:'stand',oh:false,side:'both',kb:1,g:1,b:1,t:1,role:'',alt:null,sub:null,fast:false},o);
+const LIB=[
+/* beginner — squat */
+E({id:'bsq',n:'Bodyweight squat',kb:0,alt:'boxsq',cue:'Chest tall, knees track with toes, controlled tempo.',mus:'Quads · Glutes'}),
+E({id:'boxsq',n:'Box squat',kb:0,alt:'bsq',cue:'Sit back to the box, stand tall without rocking.',mus:'Quads · Glutes'}),
+E({id:'gsq',n:'Kettlebell goblet squat',role:'M',g:2,alt:'boxsq',cue:'Bell tight to the chest, elbows drop inside the knees.',mus:'Quads · Glutes · Core'}),
+E({id:'gbox',n:'Goblet squat to box',role:'M',g:2,alt:'gsq',cue:'Touch the box lightly — no plop — drive up through the heels.',mus:'Quads · Glutes'}),
+E({id:'sumosq',n:'Sumo squat',role:'M',alt:'bsq',cue:'Wide stance, toes turned out, hips drop between the knees.',mus:'Adductors · Glutes'}),
+E({id:'gpause',n:'Goblet squat with pause',role:'M',g:2,t:2,alt:'gsq',cue:'Two-second pause at the bottom, brace, then drive.',mus:'Quads · Glutes'}),
+E({id:'ssplit',n:'Supported split squat',kb:0,alt:'bsq',cue:'Staggered stance, hand on support, back knee drops straight down.',mus:'Quads · Glutes'}),
+E({id:'altlunge',n:'Alternating reverse lunge',kb:0,side:'alt',alt:'bsq',cue:'Step back, light touch, drive through the front heel.',mus:'Quads · Glutes'}),
+E({id:'kblunge',n:'Kettlebell reverse lunge',role:'M',g:2,side:'alt',alt:'altlunge',cue:'Bell at the chest, step back, keep the torso steady.',mus:'Quads · Glutes · Core'}),
+/* beginner — hinge */
+E({id:'hinge',n:'Hip-hinge practice',kb:0,cue:'Hips back, flat back, soft knees — feel the hamstrings load.',mus:'Hamstrings · Glutes'}),
+E({id:'kdl',n:'Kettlebell deadlift',role:'H',g:2,b:2,alt:'hinge',cue:'Hinge down, push the floor away, keep a flat back.',mus:'Glutes · Hamstrings · Back'}),
+E({id:'ekdl',n:'Elevated kettlebell deadlift',role:'H',b:2,alt:'hinge',cue:'Bell raised on a block — shorter pull, perfect back.',mus:'Glutes · Hamstrings'}),
+E({id:'sumodl',n:'Sumo deadlift',role:'H',g:2,b:2,alt:'ekdl',cue:'Wide stance, chest proud, hips through at the top.',mus:'Glutes · Adductors'}),
+E({id:'suitdl',n:'Suitcase deadlift',role:'H',g:2,b:2,side:'switch',alt:'kdl',cue:'Bell beside one leg — stay level, no leaning.',mus:'Glutes · Obliques · Grip'}),
+E({id:'rdl',n:'Kettlebell Romanian deadlift',role:'H',g:2,b:3,alt:'ekdl',cue:'Soft knees, hinge to a hamstring stretch, tall chest.',mus:'Hamstrings · Glutes · Low back'}),
+E({id:'kickrdl',n:'Kickstand Romanian deadlift',role:'M',side:'switch',b:2,alt:'rdl',cue:'Back toe for balance, hinge over the front leg.',mus:'Hamstrings · Glutes'}),
+E({id:'fastdl',n:'Fast kettlebell deadlift',cat:'cond',sub:'fast',fast:true,role:'H',g:2,b:2,alt:'kdl',cue:'Quick crisp reps with a full reset — control every setup.',mus:'Glutes · Hamstrings'}),
+/* beginner — pull */
+E({id:'suprow',n:'Supported single-arm row',cat:'pull',role:'M',side:'switch',g:2,cue:'Free hand on a support, flat back, row to the hip.',mus:'Lats · Upper back'}),
+E({id:'bentrow',n:'Bent-over single-arm row',cat:'pull',role:'M',side:'switch',b:2,alt:'suprow',cue:'Hinge 45°, row to the hip, no torso twist.',mus:'Lats · Upper back'}),
+E({id:'tworow',n:'Two-handed kettlebell row',cat:'pull',role:'H',g:2,b:2,alt:'suprow',cue:'Both hands on the horn, squeeze the shoulder blades.',mus:'Lats · Upper back'}),
+E({id:'altrow',n:'Alternating kettlebell row',cat:'pull',role:'M',side:'alt',b:2,alt:'suprow',cue:'Brace the free hand on your knee, hips stay quiet.',mus:'Lats · Core'}),
+E({id:'gorillarow',n:'Gorilla row',cat:'pull',kb:2,role:'H',side:'alt',b:2,t:2,g:2,alt:'tworow',cue:'Deep hinge, alternate sides, chest stays proud.',mus:'Lats · Upper back · Grip'}),
+/* beginner — push */
+E({id:'fpress',n:'Kettlebell floor press',cat:'push',pos:'floor',role:'M',side:'switch',cue:'Lie tall, press to lockout, tap the elbow down lightly.',mus:'Chest · Triceps'}),
+E({id:'altfpress',n:'Alternating floor press',cat:'push',pos:'floor',side:'alt',alt:'fpress',cue:'One bell waits at your chest while the other presses.',mus:'Chest · Triceps · Core'}),
+E({id:'twofpress',n:'Two-handed kettlebell floor press',cat:'push',pos:'floor',role:'H',g:2,alt:'fpress',cue:'Both hands on one bell, strong even lockout.',mus:'Chest · Triceps'}),
+E({id:'hkpress',n:'Half-kneeling single-arm press',cat:'push',pos:'kneel',oh:true,role:'M',side:'switch',t:2,cue:'Tall half-kneel, brace, press without leaning.',mus:'Shoulders · Triceps · Core'}),
+E({id:'sapress',n:'Standing single-arm overhead press',cat:'push',oh:true,role:'M',side:'switch',t:2,g:2,alt:'hkpress',cue:'Squeeze the glutes, ribs down, press through.',mus:'Shoulders · Triceps'}),
+E({id:'ohpress',n:'Two-handed overhead press',cat:'push',oh:true,role:'M',t:2,g:2,alt:'hkpress',cue:'Hold the bell by the horns, press overhead, finish tall.',mus:'Shoulders · Triceps'}),
+/* beginner — core / carry */
+E({id:'suithold',n:'Suitcase hold',cat:'carry',role:'H',side:'switch',g:2,cue:'Stand tall, ribs down — resist the lean.',mus:'Obliques · Grip'}),
+E({id:'suitmarch',n:'Suitcase march',cat:'carry',role:'H',side:'switch',g:2,alt:'suithold',cue:'Slow knee lifts, no swaying side to side.',mus:'Obliques · Hip flexors · Grip'}),
+E({id:'suitcarry',n:'Suitcase carry',cat:'carry',role:'H',side:'switch',g:2,alt:'suitmarch',cue:'Walk smooth and level, shoulders square.',mus:'Obliques · Grip'}),
+E({id:'farmhold',n:'Farmer hold',cat:'carry',kb:2,role:'H',g:3,alt:'suithold',cue:'A bell in each hand, chest proud, breathe.',mus:'Grip · Traps · Core'}),
+E({id:'farmcarry',n:'Farmer carry',cat:'carry',kb:2,role:'H',g:3,alt:'farmhold',cue:'Short quick steps, tall posture.',mus:'Grip · Traps · Core'}),
+E({id:'frhold',n:'Front-rack hold',cat:'core',role:'M',g:2,alt:'suithold',cue:'Bell racked tight, elbow high, breathe behind the brace.',mus:'Core · Upper back'}),
+E({id:'frmarch',n:'Front-rack march',cat:'core',role:'M',g:2,alt:'frhold',cue:'March in place, keep the rack solid.',mus:'Core · Hip flexors'}),
+E({id:'halo',n:'Kettlebell halo',cat:'core',oh:true,role:'L',t:2,g:2,alt:'aroundpass',cue:'Tight circles around the head, ribs stay quiet.',mus:'Shoulders · Core'}),
+E({id:'aroundpass',n:'Around-the-body pass',cat:'core',role:'L',g:2,cue:'Hand-to-hand around the body, stand tall.',mus:'Grip · Core'}),
+E({id:'seathold',n:'Seated kettlebell hold',cat:'core',pos:'floor',role:'M',g:2,alt:'frhold',cue:'Sit tall, bell at the chest, slow controlled breaths.',mus:'Core · Posture'}),
+E({id:'deadbug',n:'Dead bug with kettlebell hold',cat:'core',pos:'floor',role:'L',t:2,alt:'suithold',cue:'Bell at the chest, low back pressed, slow opposite arm and leg.',mus:'Deep core'}),
+/* intermediate — ballistic (swing-gated) */
+E({id:'swing2',lvl:'i',n:'Two-handed kettlebell swing',cat:'cond',sub:'swing',role:'H',b:3,t:2,g:2,alt:'fastdl',cue:'Snap the hips, let the bell float, plank at the top.',mus:'Glutes · Hamstrings · Grip'}),
+E({id:'dstopswing',lvl:'i',n:'Dead-stop swing',cat:'cond',sub:'swing',role:'H',b:2,t:2,alt:'fastdl',cue:'Full reset every rep — perfect setup each time.',mus:'Glutes · Hamstrings'}),
+E({id:'h2hswing',lvl:'i',n:'Hand-to-hand swing',cat:'cond',sub:'swing',role:'M',g:3,t:3,alt:'swing2',cue:'Smooth hand switches at hip height.',mus:'Glutes · Core · Grip'}),
+E({id:'saswing',lvl:'i',n:'Single-arm swing',cat:'cond',sub:'swing',role:'M',side:'switch',g:3,t:3,b:3,alt:'swing2',cue:'Free arm mirrors the swing, shoulders stay level.',mus:'Glutes · Obliques · Grip'}),
+E({id:'clean',lvl:'i',n:'Kettlebell clean',cat:'cond',sub:'clean',role:'M',side:'switch',g:3,t:3,alt:'fastdl',cue:'Zip the bell up, punch through, soft catch in the rack.',mus:'Glutes · Upper back · Grip'}),
+E({id:'dstopclean',lvl:'i',n:'Dead-stop clean',cat:'cond',sub:'clean',role:'M',side:'switch',g:3,t:3,alt:'clean',cue:'Reset each rep and tame the arc.',mus:'Glutes · Grip'}),
+E({id:'cleanfrhold',lvl:'i',n:'Clean to front-rack hold',cat:'cond',sub:'clean',role:'M',side:'switch',g:3,t:3,alt:'dstopclean',cue:'Clean, hold the rack three seconds, reset.',mus:'Glutes · Core · Grip'}),
+E({id:'pushpress',lvl:'i',n:'Kettlebell push press',cat:'push',oh:true,role:'M',side:'switch',t:2,alt:'hkpress',cue:'Dip and drive with the legs, lock out strong.',mus:'Shoulders · Legs · Triceps'}),
+E({id:'gtopress',lvl:'i',n:'Goblet squat to press',cat:'push',oh:true,sub:'thruster',role:'M',t:2,alt:'pushpress',cue:'Deep squat, stand, press — one smooth chain.',mus:'Full body'}),
+E({id:'thruster',lvl:'i',n:'Kettlebell thruster',cat:'push',oh:true,sub:'thruster',role:'M',t:2,g:2,alt:'pushpress',cue:'Squat and press in one motion, breathe at the top.',mus:'Full body'}),
+/* intermediate — core / full body */
+E({id:'plankdrag',lvl:'i',n:'Plank kettlebell drag',cat:'core',pos:'floor',side:'alt',g:2,t:2,alt:'frhold',cue:'Quiet hips, drag the bell low past your ribs.',mus:'Core · Lats'}),
+E({id:'halftgu',lvl:'i',n:'Half Turkish get-up',cat:'core',pos:'floor',oh:true,side:'switch',t:3,g:2,alt:'seathold',cue:'Punch up, hinge to the elbow, pause, return.',mus:'Shoulder · Core · Hips'}),
+E({id:'tgu',lvl:'i',n:'Turkish get-up',cat:'core',pos:'floor',oh:true,side:'switch',t:3,g:2,alt:'halftgu',cue:'Slow and deliberate — eyes on the bell the whole way.',mus:'Full-body stability'}),
+E({id:'windmill',lvl:'i',n:'Kettlebell windmill',cat:'core',oh:true,side:'switch',t:3,g:2,role:'L',alt:'hinge',cue:'Bell locked overhead, hinge sideways, soft knees.',mus:'Obliques · Shoulders · Hamstrings'}),
+E({id:'frlunge',lvl:'i',n:'Front-rack reverse lunge',cat:'squat',side:'switch',t:2,g:2,role:'M',alt:'kblunge',cue:'Bell racked, step back, stay tall.',mus:'Quads · Glutes · Core'}),
+E({id:'offsquat',lvl:'i',n:'Offset front-rack squat',cat:'squat',side:'switch',t:2,role:'M',alt:'gsq',cue:'Bell racked on one side — fight the lean.',mus:'Quads · Obliques'}),
+E({id:'cleanpress',lvl:'i',n:'Clean and press',cat:'cond',sub:'clean',oh:true,side:'switch',t:3,g:3,alt:'pushpress',cue:'Clean, pause, press — three crisp moves.',mus:'Full body'}),
+E({id:'cleanlunge',lvl:'i',n:'Clean and reverse lunge',cat:'cond',sub:'clean',side:'switch',t:3,g:2,alt:'frlunge',cue:'Clean, then step back — keep the rack steady.',mus:'Full body'}),
+/* advanced */
+E({id:'snatch',lvl:'a',n:'Single-arm kettlebell snatch',cat:'cond',sub:'snatch',oh:true,side:'switch',t:3,g:3,b:2,alt:'highpull',cue:'Powerful hip snap, catch softly overhead.',mus:'Posterior chain · Grip'}),
+E({id:'highpull',lvl:'a',n:'Kettlebell high pull',cat:'cond',sub:'snatch',side:'switch',t:2,g:2,alt:'swing2',cue:'Explode from the hips, pull high, elbows up.',mus:'Traps · Glutes'}),
+E({id:'cleanppress',lvl:'a',n:'Clean and push press',cat:'cond',sub:'clean',oh:true,side:'switch',t:3,g:3,alt:'pushpress',cue:'Clean, dip-drive, lockout.',mus:'Full body'}),
+E({id:'cleanthruster',lvl:'a',n:'Clean and thruster',cat:'cond',sub:'clean',oh:true,side:'switch',t:3,g:3,alt:'thruster',cue:'Clean, squat, press — smooth transitions.',mus:'Full body'}),
+E({id:'dblclean',lvl:'a',n:'Double kettlebell clean',cat:'cond',sub:'clean',kb:2,g:3,t:3,alt:'clean',cue:'Both bells zip up together, soft rack.',mus:'Glutes · Upper back'}),
+E({id:'dblfsquat',lvl:'a',n:'Double kettlebell front squat',cat:'squat',kb:2,g:3,t:2,role:'H',alt:'gsq',cue:'Elbows high, brace hard, squat deep.',mus:'Quads · Core'}),
+E({id:'dblpress',lvl:'a',n:'Double kettlebell press',cat:'push',oh:true,kb:2,g:3,t:2,alt:'ohpress',cue:'Bells in the rack, press both strong.',mus:'Shoulders · Triceps'}),
+E({id:'dblcleanpress',lvl:'a',n:'Double kettlebell clean and press',cat:'cond',sub:'clean',oh:true,kb:2,g:3,t:3,alt:'dblclean',cue:'Clean together, press together.',mus:'Full body'}),
+E({id:'dblswing',lvl:'a',n:'Double kettlebell swing',cat:'cond',sub:'swing',kb:2,b:3,g:3,t:2,alt:'swing2',cue:'Two bells, one hip snap.',mus:'Posterior chain'}),
+E({id:'hvtgu',lvl:'a',n:'Turkish get-up (heavier bell)',cat:'core',pos:'floor',oh:true,side:'switch',t:3,g:2,role:'H',alt:'tgu',cue:'Earn the heavier bell — every rep controlled.',mus:'Full-body stability'})
+];
+const EX={};LIB.forEach(x=>EX[x.id]=x);
+const CATMETA={squat:['Squat/Lunge','var(--c-squat)'],hinge:['Hip hinge','var(--c-hinge)'],push:['Push','var(--c-push)'],pull:['Pull','var(--c-pull)'],core:['Core','var(--c-core)'],carry:['Carry','var(--c-carry)'],cond:['Conditioning','var(--c-cond)']};
+
+/* ================= config & composition ================= */
+const KB_WEIGHTS=[4,6,8,10,12,14,16,18,20,22,24,26,28,32];
+const AVOID_OPTS=[['lowback','Lower back'],['shoulders','Shoulders'],['knees','Knees'],['wrists','Wrists'],['grip','Grip / forearms']];
+const FULL={30:{w:4,c:4},40:{w:5,c:5},45:{w:5,c:4}};
+const cfg={level:'beginner',dur:30,kbs:1,goal:'general',swing:'no',warm:true,cool:true,floor:true,oh:true,low:false,
+  weights:new Set([12,16]),avoid:new Set()};
+
+function pairCount(){const f=FULL[cfg.dur];let secs=cfg.dur*60;if(cfg.warm)secs-=f.w*60;if(cfg.cool)secs-=f.c*60;return Math.floor(secs/120);}
+function sessionSeconds(){return pairCount()*120+(cfg.warm?FULL[cfg.dur].w*60:0)+(cfg.cool?FULL[cfg.dur].c*60:0);}
+
+const W4=[['March in place','Relaxed pace, swing the arms, wake up the hips'],
+ ['Arm circles + torso twists','Big slow circles, gentle controlled twists'],
+ ['Hip-hinge practice','Hips back, flat back, soft knees'],
+ ['Bodyweight squat','Slow tempo, brief pause at the bottom']];
+const W5=[...W4,['Slow reverse lunge + reach','Alternate legs, reach tall overhead']];
+const C4=[['Hip-flexor stretch','Half-kneeling lunge, squeeze the glute','switch'],
+ ['Hamstring fold','Hinge forward, let the head hang'],
+ ['Chest + shoulder opener','Clasp hands behind you, lift gently'],
+ ['Deep squat hold + breathing','Hold on, slow nasal breaths']];
+const C5=[...C4,['Side stretch + neck','Reach overhead each side, gentle neck tilts','switch']];
+const WARMS={30:W4,40:W5,45:W5},COOLS={30:C4,40:C5,45:C4};
+
+/* ================= pairing logic ================= */
+const PAIR_TYPES=[
+ {id:'SQUAT + PULL',a:['squat'],b:['pull'],w:1.15},
+ {id:'SQUAT + PUSH',a:['squat'],b:['push'],w:1.05},
+ {id:'HINGE + PUSH',a:['hinge'],b:['push'],w:1.05},
+ {id:'HINGE + PULL',a:['hinge'],b:['pull'],w:1.1},
+ {id:'LEGS + CORE/CARRY',a:['squat','hinge'],b:['core','carry'],w:0.95},
+ {id:'PUSH + PULL',a:['push'],b:['pull'],w:0.9},
+ {id:'COND + STRENGTH',a:['cond'],b:['squat','hinge','push','pull','core'],w:1.0}
+];
+const rank={b:1,i:2,a:3};
+function conflict(a,b){
+ if(!a||!b||a.id===b.id)return'Repeat';
+ if(a.b>=3&&b.b>=3)return'Lower-back overload';
+ if(a.g>=3&&b.g>=3)return'Grip overload';
+ const ball=x=>x==='swing'||x==='clean'||x==='snatch';
+ if(ball(a.sub)&&ball(b.sub))return a.sub===b.sub?'Same ballistic twice':'Two ballistics together';
+ if(a.fast&&b.fast)return'Two fast patterns';
+ if((a.sub==='swing'&&b.cat==='hinge')||(b.sub==='swing'&&a.cat==='hinge'))return'Hinge stacked on swings';
+ if(a.oh&&b.oh&&a.cat==='push'&&b.cat==='push')return'Two heavy overhead presses';
+ if(a.oh&&b.oh&&a.t>=2&&b.t>=2&&(a.cat==='core'||b.cat==='core'))return'Two hard overhead moves';
+ if((a.sub==='thruster'&&b.cat==='squat'&&/goblet/i.test(b.n))||(b.sub==='thruster'&&a.cat==='squat'&&/goblet/i.test(a.n)))return'Squat stacked on a thruster';
+ if(a.t>=3&&b.t>=3)return'Two technical moves';
+ if(a.cat===b.cat&&a.cat!=='core'&&a.cat!=='carry')return'Same movement twice';
+ if((a.cat==='cond'&&b.pos==='floor')||(b.cat==='cond'&&a.pos==='floor'))return'Fast move into floor work';
+ return null;
+}
+function buildPool(){
+ const cr=rank[cfg.level[0]];
+ return LIB.filter(x=>{
+  const swingOK=(x.sub==='swing'&&cfg.swing==='conf'&&cfg.level==='beginner'&&['swing2','dstopswing'].includes(x.id));
+  if(rank[x.lvl[0]]>cr&&!swingOK)return false;
+  if(x.kb>cfg.kbs)return false;
+  if(x.pos==='floor'&&!cfg.floor)return false;
+  if(x.oh&&!cfg.oh)return false;
+  if(cfg.low&&(x.cat==='cond'||x.fast))return false;
+  if(x.lvl!=='b'&&ballSub(x.sub)){
+    if(cfg.swing==='no')return false;
+    if(cfg.swing==='learn'&&!['swing2','dstopswing'].includes(x.id))return false;
+  }
+  if(cfg.avoid.has('lowback')&&x.b>=3)return false;
+  if(cfg.avoid.has('shoulders')&&x.oh)return false;
+  if(cfg.avoid.has('knees')&&x.cat==='squat')return false;
+  if(cfg.avoid.has('wrists')&&(['clean','snatch'].includes(x.sub)||['halo','aroundpass'].includes(x.id)))return false;
+  if(cfg.avoid.has('grip')&&(x.g>=3||x.cat==='carry'))return false;
+  return true;
+ });
+ function ballSub(s){return s==='swing'||s==='clean'||s==='snatch';}
+}
+const state={pool:[],pairs:[],rec:null};
+function generate(){
+ const pool=state.pool;const n=pairCount();
+ const want={squat:n*.2,hinge:n*.2,push:n*.17,pull:n*.17,core:n*.13,carry:n*.13,
+  cond:n*(cfg.goal==='cond'?0.28:cfg.level==='beginner'?0.12:0.18)};
+ const have=c=>pool.some(x=>x.cat===c);
+ const cover={};Object.keys(want).forEach(c=>cover[c]=0);
+ const useCount={},lastIdx={},pairs=[];
+ let prevCats=[];
+ const pickEx=(cats,partner,i,gap)=>{
+  let cand=pool.filter(x=>cats.includes(x.cat));
+  if(partner)cand=cand.filter(x=>x.id!==partner.id&&!conflict(x,partner));
+  cand=cand.filter(x=>!(x.id in lastIdx)||i-lastIdx[x.id]>=gap);
+  if(partner){
+   cand.sort((p,q)=>{const sc=e=>(e.pos===partner.pos?0:e.pos==='floor'?2:1);return sc(p)-sc(q)||(useCount[p.id]||0)-(useCount[q.id]||0);});
+  }
+  if(!cand.length)return null;
+  cand.sort((p,q)=>(useCount[p.id]||0)-(useCount[q.id]||0));
+  const top=cand.slice(0,Math.min(3,cand.length));
+  return top[Math.floor(Math.random()*top.length)];
+ };
+ const pickType=i=>{
+  const opts=[];
+  for(const pt of PAIR_TYPES){
+   if(!pool.some(x=>pt.a.includes(x.cat)))continue;
+   let s=pt.w;
+   if(pt.id==='COND + STRENGTH'){
+    if((cover.cond||0)>=want.cond)continue;
+    s*=cfg.goal==='cond'?1.55:cfg.goal==='strength'?0.55:1;
+   }
+   pt.a.forEach(c=>{if(c!=='cond')s+=Math.max(0,want[c]-cover[c])*.5;});
+   pt.b.forEach(c=>{if(have(c))s+=Math.max(0,want[c]-cover[c])*.35;});
+   if(prevCats.some(c=>pt.a.includes(c)))s-=0.8;
+   s+=Math.random()*.4;
+   opts.push({pt,s});
+  }
+  if(!opts.length)return null;
+  opts.sort((a,b)=>b.s-a.s);return opts[0].pt;
+ };
+ for(let i=0;i<n;i++){
+  let made=null;
+  for(let gap=5;gap>=2&&!made;gap--){
+   for(let tries=0;tries<45&&!made;tries++){
+    const pt=pickType(i);if(!pt)break;
+    const A=pickEx(pt.a,null,i,gap);if(!A)continue;
+    const B=pickEx(pt.b,A,i,gap);if(!B)continue;
+    made={a:A,b:B,type:pt.id};
+   }
+  }
+  if(!made){const A=pool[Math.floor(Math.random()*pool.length)];
+   const B=pool.find(x=>x.id!==A.id&&!conflict(x,A))||A;made={a:A,b:B,type:'MIXED'};}
+  pairs.push(made);
+  [made.a,made.b].forEach(x=>{useCount[x.id]=(useCount[x.id]||0)+1;lastIdx[x.id]=i;cover[x.cat]=(cover[x.cat]||0)+1;});
+  prevCats=[made.a.cat,made.b.cat];
+ }
+ state.pairs=pairs;state.cover=cover;state.useCount=useCount;
+}
+function findSwap(pair,i,slot){
+ const other=slot==='a'?pair.b:pair.a, cur=slot==='a'?pair.a:pair.b;
+ const near=new Set();
+ for(let j=Math.max(0,i-2);j<=Math.min(state.pairs.length-1,i+2);j++){
+  if(j===i)continue;near.add(state.pairs[j].a.id);near.add(state.pairs[j].b.id);}
+ let cand=state.pool.filter(x=>x.cat===cur.cat&&x.id!==other.id&&!near.has(x.id)&&!conflict(x,other));
+ if(!cand.length)cand=state.pool.filter(x=>x.id!==other.id&&!near.has(x.id)&&!conflict(x,other));
+ if(!cand.length)cand=state.pool.filter(x=>x.id!==other.id&&!conflict(x,other));
+ if(!cand.length)return cur;
+ cand.sort((p,q)=>(state.useCount[p.id]||0)-(state.useCount[q.id]||0));
+ return cand[Math.floor(Math.random()*Math.min(2,cand.length))];
+}
+function weightSuggest(x){
+ const w=[...cfg.weights].sort((a,b)=>a-b);if(!w.length)return'';
+ if(x.role==='H')return w[w.length-1]+' kg';
+ if(x.role==='L')return w[0]+' kg';
+ if(x.role==='M')return w[Math.floor((w.length-1)/2)]+' kg';
+ return '';
+}
+
+/* ================= screens nav ================= */
+function show(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');
+ document.body.classList.toggle('in-timer',id==='scr-timer');window.scrollTo(0,0);}
+
+/* ================= setup UI ================= */
+function bindSeg(id,key,cast){$('#'+id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ $$('#'+id+' button').forEach(x=>x.classList.remove('on'));b.classList.add('on');cfg[key]=cast?cast(b.dataset.v):b.dataset.v;refreshQuick();});}
+bindSeg('sgLevel','level');bindSeg('sgDur','dur',v=>+v);bindSeg('sgKb','kbs',v=>+v);bindSeg('sgGoal','goal');bindSeg('sgSwing','swing');
+
+/* --- Accessible switches: cfg is the single source of truth --- */
+function updateSwitch(switchButton, enabled) {
+  switchButton.classList.toggle('on', enabled);
+  switchButton.setAttribute('aria-checked', String(enabled));
+  const status = switchButton.querySelector('.sr-only');
+  if (status) {
+    status.textContent = enabled ? 'On' : 'Off';
+  }
+}
+function syncSwitches() {
+  $$('.sw').forEach(switchButton => {
+    const configKey = switchButton.dataset.k;
+    updateSwitch(switchButton, Boolean(cfg[configKey]));
+  });
+}
+// Native <button> handles mouse, touch, Enter and Space — one click listener is enough.
+$$('.sw').forEach(switchButton => {
+  switchButton.addEventListener('click', () => {
+    const configKey = switchButton.dataset.k;
+    cfg[configKey] = !cfg[configKey];
+    updateSwitch(switchButton, cfg[configKey]);
+    refreshQuick();
+  });
+});
+
+KB_WEIGHTS.forEach(w=>{const c=document.createElement('button');c.className='chip'+(cfg.weights.has(w)?' on':'');c.textContent=w;
+ c.onclick=()=>{cfg.weights.has(w)?cfg.weights.delete(w):cfg.weights.add(w);c.classList.toggle('on');};$('#weightChips').appendChild(c);});
+AVOID_OPTS.forEach(([k,l])=>{const c=document.createElement('button');c.className='chip warn';c.textContent=l;
+ c.onclick=()=>{cfg.avoid.has(k)?cfg.avoid.delete(k):cfg.avoid.add(k);c.classList.toggle('on');};$('#avoidChips').appendChild(c);});
+function refreshQuick(){[30,40,45].forEach(d=>{const f=FULL[d];const saved=cfg.dur;cfg.dur=d;const p=pairCount();cfg.dur=saved;
+ const parts=[];if(cfg.warm)parts.push('warm '+f.w+"'");parts.push(p+' pairs');if(cfg.cool)parts.push('cool '+f.c+"'");
+ $('#qsub'+d).textContent=parts.join(' · ');});}
+$$('.qtile').forEach(t=>t.onclick=()=>{cfg.dur=+t.dataset.dur;
+ $$('#sgDur button').forEach(b=>b.classList.toggle('on',+b.dataset.v===cfg.dur));buildWorkout();});
+$('#btnBuild').onclick=buildWorkout;
+function refreshLastHint(){const h=store.get('bw_hist',[]);const el=$('#lastHint');
+ if(!h.length){el.textContent='First session? Pick a quick-start — the coach handles the programming.';return;}
+ const r=h[0];const d=new Date(r.date);el.textContent=`Last session ${d.toLocaleDateString()}: ${r.pairsDone}/${r.pairsTotal} pairs${r.avg?` · effort ${r.avg}/10`:''} — ${coachWord(r.avg)}`;}
+function coachWord(avg){if(!avg)return'good work';if(avg<=4)return'go a little harder next time';if(avg>=9)return'ease it back next time';return'keep this level';}
+
+/* ================= build & preview ================= */
+function buildWorkout(){
+ state.pool=buildPool();
+ if(state.pool.length<6){toast('Too many filters — not enough exercises left. Loosen one or two.');return;}
+ generate();
+ const uniq=new Set(state.pairs.flatMap(p=>[p.a.id,p.b.id])).size;
+ renderPreview();show('scr-preview');
+ if(uniq<state.pairs.length)toast('Heads up: heavy filters mean some repeats this session.');
+}
+$('#pvBack').onclick=()=>show('scr-setup');
+$('#btnRegen').onclick=()=>{generate();renderPreview();toast('Fresh workout generated');};
+function renderPreview(){
+ const n=state.pairs.length;
+ $('#pvMeta').innerHTML=
+  `<span class="mchip hl">≈ ${Math.round(sessionSeconds()/60)} min</span>`+
+  `<span class="mchip">${cfg.level}</span><span class="mchip">${cfg.goal==='cond'?'conditioning':cfg.goal==='strength'?'strength endurance':'general fitness'}</span>`+
+  `<span class="mchip">${cfg.kbs===2?'two bells':'one bell'}</span>`+
+  `<span class="mchip">${n} pairs × 2:00</span>`+
+  ([...cfg.weights].sort((a,b)=>a-b).length?`<span class="mchip">🔔 ${[...cfg.weights].sort((a,b)=>a-b).join(' · ')} kg</span>`:'');
+ $('#pvWarmRow').innerHTML=cfg.warm?`<div class="card wc-card"><h3>🔥 WARM-UP · ${FULL[cfg.dur].w} min</h3>${WARMS[cfg.dur].map(w=>`<div class="wc-item"><span>${w[0]}</span><span class="t">60s</span></div>`).join('')}</div>`:'';
+ $('#pvCoolRow').innerHTML=cfg.cool?`<div class="card wc-card"><h3>❄ COOL-DOWN · ${FULL[cfg.dur].c} min</h3>${COOLS[cfg.dur].map(w=>`<div class="wc-item"><span>${w[0]}</span><span class="t">60s</span></div>`).join('')}</div>`:'';
+ const mx=Math.max(...Object.values(state.cover),1);
+ $('#balBars').innerHTML=Object.keys(CATMETA).filter(c=>state.cover[c]>0).map(c=>{
+  const[lab,col]=CATMETA[c];const pct=Math.round(state.cover[c]/mx*100);
+  return `<div class="bal"><span class="bl">${lab}</span><span class="bar"><i class="fill" style="width:${pct}%;background:${col}"></i></span><span class="bn">${state.cover[c]}</span></div>`;}).join('');
+ $('#pvPairs').innerHTML=state.pairs.map((p,i)=>{
+  const col=CATMETA[p.a.cat][1];
+  const row=(slot,x)=>`<div class="exrow">
+   <div class="line1"><span class="slot ${slot}">${slot.toUpperCase()}</span><span class="exname">${x.n}</span>
+    <span class="durtag">45s</span>${weightSuggest(x)?`<span class="wtag">🔔 ${weightSuggest(x)}</span>`:''}
+    <span class="tag" style="--c:${CATMETA[x.cat][1]}">${CATMETA[x.cat][0]}</span></div>
+   <div class="line2"><span><span class="mus">${x.mus}</span>${x.alt?` · <span class="easier">easier: <b>${EX[x.alt].n}</b></span>`:''}</span>
+    <button class="btn mini" data-act="sw${slot.toUpperCase()}" data-i="${i}">↺ swap</button></div></div>`;
+  return `<div class="card pair" style="--c:${col}">
+   <div class="pair-h"><span class="pair-no">PAIR ${i+1}</span><span class="ptype">${p.type}</span>
+    <span class="ptools">
+     <button class="btn mini" data-act="up" data-i="${i}" ${i===0?'disabled':''}>↑</button>
+     <button class="btn mini" data-act="dn" data-i="${i}" ${i===n-1?'disabled':''}>↓</button>
+     <button class="btn mini" data-act="rp" data-i="${i}">⟳ pair</button></span></div>
+   ${row('a',p.a)}${row('b',p.b)}
+   <div class="restrow">▸ Rest 30s — breathe, shake out, next pair</div></div>`;}).join('');
+}
+$('#pvPairs').addEventListener('click',e=>{
+ const b=e.target.closest('button[data-act]');if(!b)return;
+ const i=+b.dataset.i,act=b.dataset.act,p=state.pairs;
+ if(act==='up'&&i>0)[p[i-1],p[i]]=[p[i],p[i-1]];
+ if(act==='dn'&&i<p.length-1)[p[i+1],p[i]]=[p[i],p[i+1]];
+ if(act==='rp'){const a=findSwap(p[i],i,'a');const b2=findSwap({...p[i],a},i,'b');p[i]={a,b:b2,type:'CUSTOM'};}
+ if(act==='swA'){const nx=findSwap(p[i],i,'a');state.useCount[nx.id]=(state.useCount[nx.id]||0)+1;p[i].a=nx;}
+ if(act==='swB'){const nx=findSwap(p[i],i,'b');state.useCount[nx.id]=(state.useCount[nx.id]||0)+1;p[i].b=nx;}
+ renderPreview();
+});
+$('#btnSaveW').onclick=()=>{
+ const saved=store.get('bw_saved',[]);
+ saved.unshift({ts:Date.now(),dur:cfg.dur,level:cfg.level,warm:cfg.warm,cool:cfg.cool,
+  ids:state.pairs.map(p=>[p.a.id,p.b.id])});
+ store.set('bw_saved',saved.slice(0,10));renderSaved();toast('Workout saved');};
+function renderSaved(){
+ const saved=store.get('bw_saved',[]);const box=$('#savedBox');
+ if(!saved.length){box.style.display='none';return;}
+ box.style.display='block';
+ $('#savedList').innerHTML=saved.map((s,i)=>`<div class="saved-item">
+  <span>${new Date(s.ts).toLocaleDateString()} · ${s.ids.length} pairs · ${s.level}</span>
+  <span style="display:flex;gap:6px"><button class="btn mini" data-load="${i}">Load</button>
+  <button class="btn mini btn-danger" data-del="${i}">✕</button></span></div>`).join('');
+}
+$('#savedList').addEventListener('click',e=>{
+ const saved=store.get('bw_saved',[]);
+ if(e.target.dataset.load!=null){const s=saved[+e.target.dataset.load];
+  const pairs=s.ids.map(([a,b])=>({a:EX[a],b:EX[b],type:'SAVED'})).filter(p=>p.a&&p.b);
+  if(!pairs.length)return toast('Could not load that workout');
+  // Apply only settings the saved file actually contains; keep current cfg for the rest.
+  if(typeof s.warm==='boolean')cfg.warm=s.warm;
+  if(typeof s.cool==='boolean')cfg.cool=s.cool;
+  if(typeof s.floor==='boolean')cfg.floor=s.floor;
+  if(typeof s.oh==='boolean')cfg.oh=s.oh;
+  if(typeof s.low==='boolean')cfg.low=s.low;
+  syncSwitches();
+  state.pool=buildPool();state.useCount={};state.cover={};
+  pairs.forEach(p=>{[p.a,p.b].forEach(x=>{state.useCount[x.id]=(state.useCount[x.id]||0)+1;state.cover[x.cat]=(state.cover[x.cat]||0)+1;});});
+  state.pairs=pairs;renderPreview();show('scr-preview');}
+ if(e.target.dataset.del!=null){saved.splice(+e.target.dataset.del,1);store.set('bw_saved',saved);renderSaved();}
+});
+
+/* ================= timer engine ================= */
+const T={segs:[],i:-1,seg:null,rem:0,run:false,paused:false,last:0,lastWhole:-1,elapsed:0,totalSec:0,loop:null};
+let pairsDone=0,skips=0,swaps=0,efforts=[];
+function buildTimeline(){
+ const segs=[];
+ if(cfg.warm)WARMS[cfg.dur].forEach(w=>segs.push({k:'warm',d:60,t:w[0],c:w[1],side:w[2]||null}));
+ state.pairs.forEach((p,i)=>{segs.push({k:'work',slot:'A',d:45,pair:i,ex:p.a});
+  segs.push({k:'work',slot:'B',d:45,pair:i,ex:p.b});segs.push({k:'rest',d:30,pair:i});});
+ if(cfg.cool)COOLS[cfg.dur].forEach(w=>segs.push({k:'cool',d:60,t:w[0],c:w[1],side:w[2]||null}));
+ return segs;
+}
+$('#btnStart').onclick=$('#btnStartTop').onclick=()=>{$('#ovSafety').classList.add('on');};
+$('#btnGo').onclick=()=>{
+ $('#ovSafety').classList.remove('on');ac();
+ pairsDone=0;skips=0;swaps=0;efforts=[];
+ T.segs=buildTimeline();T.i=-1;T.elapsed=0;T.totalSec=T.segs.reduce((s,x)=>s+x.d,0);
+ T.run=true;T.paused=false;setPauseUI();show('scr-timer');
+ advance();T.last=performance.now();
+ clearInterval(T.loop);T.loop=setInterval(tick,100);
+};
+function tick(){
+ if(!T.run||T.paused){T.last=performance.now();return;}
+ const now=performance.now();T.rem-=(now-T.last)/1000;T.elapsed+=(now-T.last)/1000;T.last=now;
+ const r=Math.ceil(T.rem);
+ if(r!==T.lastWhole){T.lastWhole=r;onSecond(r);}
+ if(T.rem<=0){advance();return;}
+ renderTimer();
+}
+function onSecond(r){
+ const seg=T.seg;if(!seg)return;
+ if((seg.k==='work')&&r<=5&&r>0){SND.tick();vibrate(40);}
+ if(seg.k==='rest'&&r===10)SND.restwarn();
+ const needSwitch=(seg.ex&&seg.ex.side==='switch')||seg.side==='switch';
+ if(needSwitch&&!seg.mid&&T.rem<=seg.d/2){seg.mid=true;SND.side();vibrate([80,60,80]);
+  const f=$('#sideFlash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1400);}
+}
+function enterSeg(seg){
+ T.seg=seg;T.rem=seg.d;T.last=performance.now();T.lastWhole=Math.ceil(seg.d);seg.mid=false;
+ const cls=seg.k==='work'?'ph-work':seg.k==='rest'?'ph-rest':seg.k==='warm'?'ph-warm':'ph-cool';
+ $('#scr-timer').className='screen on '+cls;
+ if(seg.k==='work'){seg.slot==='A'?SND.work():SND.b();vibrate(seg.slot==='A'?90:60);}
+ else if(seg.k==='warm')SND.work();
+ else SND.rest();
+ renderTimer();
+}
+function advance(){
+ const cur=T.segs[T.i];
+ if(cur&&cur.k==='rest')pairsDone=cur.pair+1;
+ T.i++;
+ if(T.i>=T.segs.length){finish(true);return;}
+ enterSeg(T.segs[T.i]);
+ if(cur&&cur.k==='rest'&&pairsDone%4===0&&pairsDone<state.pairs.length){T.paused=true;setPauseUI();setTimeout(showEffort,350);}
+}
+function nextInfo(){
+ const nx=T.segs[T.i+1];if(!nx)return'';
+ if(nx.k==='work'&&nx.slot==='A'){const p=state.pairs[nx.pair];return`NEXT PAIR → <b>${p.a.n}</b> then <b>${p.b.n}</b>`;}
+ if(nx.k==='work')return`NEXT → <b>${nx.ex.n}</b> — no break, move straight over`;
+ if(nx.k==='rest')return'NEXT → <b>30s REST</b>';
+ if(nx.k==='cool')return'NEXT → <b>COOL-DOWN</b> — you earned it';
+ return'';
+}
+function renderTimer(){
+ const seg=T.seg;if(!seg)return;
+ const r=Math.max(0,Math.ceil(T.rem));
+ $('#tNum').textContent=r;
+ const scr=$('#scr-timer');
+ if(seg.k==='work'){scr.classList.toggle('ph-amber',r<=5);scr.classList.toggle('ph-work',r>5);}
+ $('#ringFg').style.strokeDasharray=CIRC;
+ $('#ringFg').style.strokeDashoffset=CIRC*(1-Math.max(0,T.rem)/seg.d);
+ const pill=seg.k==='warm'?'WARM-UP':seg.k==='cool'?'COOL-DOWN':seg.k==='rest'?'REST':'WORK · '+seg.slot;
+ $('#stagePill').textContent=pill;
+ $('#tPairInfo').textContent=seg.pair!=null?`PAIR ${seg.pair+1}/${state.pairs.length} · EX ${seg.pair*2+(seg.slot==='B'?2:1)}/${state.pairs.length*2}`:(seg.k==='warm'?'WARM-UP':'COOL-DOWN');
+ let left=T.rem;for(let j=T.i+1;j<T.segs.length;j++)left+=T.segs[j].d;
+ $('#tTotal').textContent=fmt(left);
+ $('#tProg').style.width=Math.min(100,T.elapsed/T.totalSec*100)+'%';
+ if(seg.k==='work'){
+  const x=seg.ex;
+  $('#tName').textContent=x.n;
+  $('#tCue').textContent=x.cue;
+  $('#tAlt').innerHTML=x.alt?`Easier option: <b>${EX[x.alt].n}</b>`:'';
+  const ws=weightSuggest(x);$('#tCount').textContent=ws?ws+' · seconds':'seconds';
+  $('#tSide').textContent=x.side==='switch'?(seg.mid?'▶ RIGHT SIDE — finish strong':'◀ START LEFT — switch at the beep'):x.side==='alt'?'↻ ALTERNATE SIDES EVERY REP':'';
+ }else{
+  $('#tName').textContent=seg.k==='rest'?'REST':seg.t;
+  $('#tCue').textContent=seg.k==='rest'?'Shake it out. Breathe. Chalk up if you need it.':seg.c;
+  $('#tAlt').innerHTML='';$('#tSide').textContent=(seg.side==='switch')?(seg.mid?'▶ SWITCH SIDE':'◀ SWITCH AT THE BEEP'):'';
+  $('#tCount').textContent='seconds';
+ }
+ $('#tNext').innerHTML=nextInfo();
+}
+/* timer controls */
+function setPauseUI(){$('#pauseIc').textContent=T.paused?'▶':'⏸';$('#pauseLb').textContent=T.paused?'Resume':'Pause';}
+$('#cPause').onclick=()=>{T.paused=!T.paused;setPauseUI();};
+$('#cSkip').onclick=()=>{if(!T.seg)return;if(T.seg.k==='work')skips++;toast('Skipped');advance();};
+$('#cSwap').onclick=()=>{const seg=T.seg;if(!seg||seg.k!=='work')return toast('Nothing to replace right now');
+ const p=state.pairs[seg.pair];const slot=seg.slot==='A'?'a':'b';
+ const nx=findSwap(p,seg.pair,slot);if(nx.id===p[slot].id)return toast('No better option available');
+ p[slot]=nx;seg.ex=nx;swaps++;renderTimer();toast('Replaced → '+nx.n);};
+$('#cEnd').onclick=()=>{T.paused=true;setPauseUI();$('#ovEnd').classList.add('on');};
+$('#btnStay').onclick=()=>{$('#ovEnd').classList.remove('on');T.paused=false;setPauseUI();};
+$('#btnEndYes').onclick=()=>{$('#ovEnd').classList.remove('on');finish(false);};
+function toggleMute(){S.muted=!S.muted;store.set('bw_mute',S.muted);
+ $('#hdrSound').textContent=S.muted?'🔇':'🔊';$('#cMute').firstElementChild.textContent=S.muted?'🔇':'🔊';}
+$('#hdrSound').onclick=toggleMute;$('#cMute').onclick=toggleMute;
+$('#hdrSound').textContent=S.muted?'🔇':'🔊';
+document.addEventListener('keydown',e=>{
+ if(e.code==='Space'&&document.body.classList.contains('in-timer')&&!$$('.ov.on').length){e.preventDefault();$('#cPause').click();}});
+/* effort check-in */
+$('#effGrid').innerHTML=Array.from({length:10},(_,i)=>`<button data-v="${i+1}">${i+1}</button>`).join('');
+function showEffort(){$('#ovEffort').classList.add('on');}
+$('#effGrid').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ const v=+b.dataset.v;efforts.push(v);$('#ovEffort').classList.remove('on');
+ T.paused=false;setPauseUI();T.last=performance.now();
+ toast(v<=4?'Noted — we can push harder next time.':v>=9?'Noted — consider a lighter bell or easier variations.':'Right in the zone. Keep it up.');});
+
+/* ================= finish / done / history ================= */
+function finish(complete){
+ clearInterval(T.loop);T.run=false;SND.done();vibrate([100,60,100,60,200]);
+ const avg=efforts.length?Math.round(efforts.reduce((a,b)=>a+b,0)/efforts.length*10)/10:null;
+ const rec={id:Date.now(),date:new Date().toISOString(),dur:cfg.dur,level:cfg.level,goal:cfg.goal,
+  weights:[...cfg.weights].sort((a,b)=>a-b),pairsDone:pairsDone,pairsTotal:state.pairs.length,
+  skipped:skips,replaced:swaps,efforts,avg,complete,notes:''};
+ const h=store.get('bw_hist',[]);h.unshift(rec);store.set('bw_hist',h.slice(0,60));
+ state.rec=rec;renderDone(rec);show('scr-done');refreshLastHint();
+}
+function renderDone(rec){
+ $('#doneTitle').textContent=rec.complete?'DONE.':'LOGGED.';
+ $('#doneTitle').style.color=rec.complete?'var(--green)':'var(--amber)';
+ const mins=Math.round(rec.pairsDone*2);
+ $('#doneStats').innerHTML=
+  `<div class="stat"><div class="v">${rec.pairsDone}/${rec.pairsTotal}</div><div class="l">Pairs done</div></div>
+   <div class="stat"><div class="v">${mins}'</div><div class="l">Work time</div></div>
+   <div class="stat"><div class="v">${rec.avg?rec.avg:'–'}</div><div class="l">Avg effort</div></div>
+   <div class="stat"><div class="v">${rec.skipped}</div><div class="l">Skipped</div></div>
+   <div class="stat"><div class="v">${rec.replaced}</div><div class="l">Replaced</div></div>
+   <div class="stat"><div class="v">${rec.weights.length?rec.weights.join('/'):'–'}</div><div class="l">Bells (kg)</div></div>`;
+ let coach=rec.complete?'Session complete. ':'Session logged early — no judgement, come back stronger. ';
+ if(rec.avg!=null){
+  if(rec.avg<=4)coach+='Effort was low — next time try a heavier bell or harder variations.';
+  else if(rec.avg>=9)coach+='That was a grinder — next time drop the weight, pick easier variations, or shorten the session.';
+  else coach+='Effort was right in the zone — keep this level.';
+ }
+ coach+=' And remember: technique first, speed never.';
+ $('#doneCoach').textContent='🧠 '+coach;
+ $('#doneNote').value=rec.notes||'';
+}
+$('#btnNoteSave').onclick=()=>{const h=store.get('bw_hist',[]);const r=h.find(x=>x.id===state.rec.id);
+ if(r){r.notes=$('#doneNote').value;store.set('bw_hist',h);toast('Notes saved');}};
+$('#btnAgain').onclick=()=>{refreshLastHint();show('scr-setup');};
+$('#btnHist2').onclick=$('#hdrHist').onclick=()=>{renderHistory();show('scr-history');};
+$('#btnHBack').onclick=()=>show('scr-setup');
+$('#btnClearH').onclick=()=>{if(confirm('Delete the entire training log?')){store.set('bw_hist',[]);renderHistory();}};
+function renderHistory(){
+ const h=store.get('bw_hist',[]);
+ if(!h.length){$('#hStats').innerHTML='';$('#hList').innerHTML='<div class="empty">No sessions yet. Your first workout is one tap away.</div>';return;}
+ const totMin=h.reduce((s,r)=>s+r.pairsDone*2,0);
+ const avgs=h.filter(r=>r.avg).map(r=>r.avg);
+ $('#hStats').innerHTML=
+  `<div class="stat"><div class="v">${h.length}</div><div class="l">Sessions</div></div>
+   <div class="stat"><div class="v">${Math.round(totMin/60*10)/10}h</div><div class="l">Work time</div></div>
+   <div class="stat"><div class="v">${avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length*10)/10:'–'}</div><div class="l">Avg effort</div></div>`;
+ $('#hList').innerHTML=h.map(r=>`<div class="hcard">
+  <div style="flex:1">
+   <div class="hd">${new Date(r.date).toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})} · ${r.dur} min plan</div>
+   <div class="chips2">
+    <span class="badge ${r.complete?'ok':'part'}">${r.complete?'COMPLETE':r.pairsDone+'/'+r.pairsTotal+' PAIRS'}</span>
+    <span class="mchip">${r.level}</span>
+    ${r.avg?`<span class="mchip">effort ${r.avg}/10</span>`:''}
+    ${r.weights.length?`<span class="mchip">🔔 ${r.weights.join('/')} kg</span>`:''}
+    ${r.skipped?`<span class="mchip">${r.skipped} skipped</span>`:''}
+    ${r.replaced?`<span class="mchip">${r.replaced} replaced</span>`:''}
+   </div>
+   ${r.notes?`<div class="hnote">“${r.notes}”</div>`:''}
+  </div>
+  <button class="btn mini btn-danger" data-hdel="${r.id}">✕</button></div>`).join('');
+}
+$('#hList').addEventListener('click',e=>{
+ if(e.target.dataset.hdel){const h=store.get('bw_hist',[]).filter(r=>r.id!==+e.target.dataset.hdel);
+  store.set('bw_hist',h);renderHistory();}});
+
+/* ================= init ================= */
+syncSwitches();
+refreshQuick();renderSaved();refreshLastHint();
+</script>
+</body>
+</html>
